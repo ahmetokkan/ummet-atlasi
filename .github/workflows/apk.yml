@@ -1,0 +1,186 @@
+name: Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['index.html', 'icon-512.png', '.github/workflows/apk.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Android projesini olustur
+        run: |
+          VC=${{ github.run_number }}
+          mkdir -p android/app/src/main/java/com/ahmetokkan/ummetatlasi android/app/src/main/assets android/app/src/main/res/drawable-nodpi android/app/src/main/res/values
+          cp index.html android/app/src/main/assets/index.html
+          cp icon-512.png android/app/src/main/res/drawable-nodpi/ic_launcher.png
+          echo "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" | base64 -d > android/ummet.jks
+
+          cat > android/settings.gradle <<'EOT'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositories { google(); mavenCentral() } }
+          rootProject.name = 'UmmetAtlasi'
+          include ':app'
+          EOT
+
+          cat > android/build.gradle <<'EOT'
+          plugins { id 'com.android.application' version '8.5.2' apply false }
+          EOT
+
+          cat > android/gradle.properties <<'EOT'
+          org.gradle.jvmargs=-Xmx2g
+          android.useAndroidX=true
+          EOT
+
+          cat > android/app/build.gradle <<'EOT'
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'com.ahmetokkan.ummetatlasi'
+              compileSdk 34
+              defaultConfig {
+                  applicationId 'com.ahmetokkan.ummetatlasi'
+                  minSdk 23
+                  targetSdk 34
+                  versionCode VCODE
+                  versionName '1.VCODE'
+              }
+              signingConfigs {
+                  release {
+                      storeFile file('../ummet.jks')
+                      storePassword 'ummetatlasi'
+                      keyAlias 'ummet'
+                      keyPassword 'ummetatlasi'
+                  }
+              }
+              buildTypes {
+                  release {
+                      minifyEnabled false
+                      signingConfig signingConfigs.release
+                  }
+              }
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+          }
+          EOT
+          sed -i "s/VCODE/$VC/g" android/app/build.gradle
+
+          cat > android/app/src/main/res/values/strings.xml <<'EOT'
+          <resources><string name="app_name">Ümmet Atlası</string></resources>
+          EOT
+
+          cat > android/app/src/main/AndroidManifest.xml <<'EOT'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <application
+                  android:label="@string/app_name"
+                  android:icon="@drawable/ic_launcher"
+                  android:roundIcon="@drawable/ic_launcher"
+                  android:theme="@android:style/Theme.Material.NoActionBar"
+                  android:allowBackup="true">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true"
+                      android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOT
+
+          cat > android/app/src/main/java/com/ahmetokkan/ummetatlasi/MainActivity.java <<'EOT'
+          package com.ahmetokkan.ummetatlasi;
+
+          import android.app.Activity;
+          import android.content.Intent;
+          import android.graphics.Color;
+          import android.net.Uri;
+          import android.os.Bundle;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+
+          public class MainActivity extends Activity {
+              private WebView web;
+
+              @Override
+              protected void onCreate(Bundle state) {
+                  super.onCreate(state);
+                  getWindow().setStatusBarColor(Color.parseColor("#0e2238"));
+                  getWindow().setNavigationBarColor(Color.parseColor("#0e2238"));
+                  web = new WebView(this);
+                  web.setBackgroundColor(Color.parseColor("#0e2238"));
+                  setContentView(web);
+                  WebSettings s = web.getSettings();
+                  s.setJavaScriptEnabled(true);
+                  s.setDomStorageEnabled(true);
+                  s.setAllowFileAccess(true);
+                  s.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+                  web.setWebViewClient(new WebViewClient() {
+                      @Override
+                      public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest r) {
+                          Uri u = r.getUrl();
+                          if ("file".equals(u.getScheme())) return false;
+                          try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception e) { }
+                          return true;
+                      }
+                  });
+                  if (state != null) web.restoreState(state);
+                  else web.loadUrl("file:///android_asset/index.html");
+              }
+
+              @Override
+              protected void onSaveInstanceState(Bundle out) {
+                  super.onSaveInstanceState(out);
+                  web.saveState(out);
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (web.canGoBack()) web.goBack();
+                  else super.onBackPressed();
+              }
+          }
+          EOT
+
+      - name: APK derle
+        working-directory: android
+        run: gradle --no-daemon assembleRelease
+
+      - name: APK adlandir
+        run: cp android/app/build/outputs/apk/release/app-release.apk UmmetAtlasi.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: UmmetAtlasi-apk
+          path: UmmetAtlasi.apk
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-v${{ github.run_number }}
+          name: Ümmet Atlası APK (sürüm ${{ github.run_number }})
+          body: Android telefona indirip kurun. Bilinmeyen kaynaklardan yükleme izni gerekebilir.
+          files: UmmetAtlasi.apk
+          make_latest: true
